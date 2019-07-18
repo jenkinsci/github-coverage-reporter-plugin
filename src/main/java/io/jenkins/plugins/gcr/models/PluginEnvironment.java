@@ -3,13 +3,12 @@ package io.jenkins.plugins.gcr.models;
 import hudson.EnvVars;
 import hudson.model.Run;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class PluginEnvironment {
 
-    private String pullRequestId;
-
     private String pullRequestRepository;
-
-    private String gitUrl;
 
     private String gitHash;
 
@@ -18,22 +17,25 @@ public class PluginEnvironment {
     // Constructor
 
     public PluginEnvironment(EnvVars env) throws IllegalArgumentException {
-        pullRequestId = get("ghprbPullId", env);
-        pullRequestRepository = get("ghprbGhRepository", env);
-        gitUrl = get("ghprbAuthorRepoGitUrl", env);
-        gitHash = get("ghprbActualCommit", env);
+        if (env.containsKey("ghprbGhRepository") && env.containsKey("ghprbActualCommit")) {
+            pullRequestRepository = get("ghprbGhRepository", env);
+            gitHash = get("ghprbActualCommit", env);
+        } else{
+            String changeUrl = get("CHANGE_URL", env);
+
+            Pattern pattern = Pattern.compile("https://[^/]*/(.*?)/pull/.*");
+            Matcher matcher = pattern.matcher(changeUrl);
+            if (matcher.find()) {
+                pullRequestRepository = matcher.group(1);
+            } else {
+                throw new IllegalArgumentException(String.format("Can't find the owner/repo from CHANGE_URL environmental variable '%s'", changeUrl));
+            }
+            gitHash = get("GIT_COMMIT", env);
+        }
         buildUrl = get("BUILD_URL", env);
     }
 
     // Getters / Setters
-
-    public String getPullRequestId() {
-        return pullRequestId;
-    }
-
-    public String getGitUrl() {
-        return gitUrl;
-    }
 
     public String getGitHash() {
         return gitHash;

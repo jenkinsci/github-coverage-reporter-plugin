@@ -27,7 +27,7 @@ public class CoberturaParser implements CoverageParser {
 
             return coverage;
         } catch (Exception ex) {
-            String message = String.format("Failed to parse Jacoco coverage for filepath '%s'", filepath);
+            String message = String.format("Failed to parse Cobertura coverage for filepath '%s'", filepath);
             throw new ParserException(message, ex);
         }
     }

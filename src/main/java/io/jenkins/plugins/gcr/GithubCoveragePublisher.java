@@ -1,5 +1,6 @@
 package io.jenkins.plugins.gcr;
 
+import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.FilePath;
@@ -31,7 +32,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
-public class GithubCoveragePublisher extends Recorder implements SimpleBuildStep {
+public class GithubCoveragePublisher extends Recorder {
 
     public static final int COMPARISON_SONAR = 0;
     public static final int COMPARISON_FIXED = 1;
@@ -54,7 +55,7 @@ public class GithubCoveragePublisher extends Recorder implements SimpleBuildStep
 
     @Override
     public DescriptorImpl getDescriptor() {
-        return (DescriptorImpl)super.getDescriptor();
+        return (DescriptorImpl) super.getDescriptor();
     }
 
     // Getters / Setters
@@ -94,25 +95,36 @@ public class GithubCoveragePublisher extends Recorder implements SimpleBuildStep
         this.coverageRateType = coverageRateType;
     }
 
-    // Runner
-
     @Override
-    public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-        listener.getLogger().println("Attempting to parse file of type, " + coverageXmlType + "");
+    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+            throws InterruptedException, IOException {
 
-        PluginEnvironment environment = new PluginEnvironment(run.getEnvironment(listener));
+        if (build == null) {
+            return false;
+        }
+        FilePath workspace = build.getWorkspace();
+        if (workspace == null) {
+            return false;
+        }
+        return publishCoverage(build, workspace, listener, build.getEnvironment(listener), filepath, coverageXmlType, comparisonOption, coverageRateType);
+    }
+
+    public static boolean publishCoverage(Run<?, ?> build, FilePath workspace, TaskListener listener, EnvVars env, String filepath, String coverageXmlType, io.jenkins.plugins.gcr.models.ComparisonOption comparisonOption, String coverageRateType) throws InterruptedException, IOException {
+        listener.getLogger().println("build: Attempting to parse file of type, " + coverageXmlType + "");
+
+        PluginEnvironment environment = new PluginEnvironment(env);
         String githubAccessToken = PluginConfiguration.DESCRIPTOR.getGithubAccessToken();
         String githubUrl = PluginConfiguration.DESCRIPTOR.getGithubEnterpriseUrl();
         GithubClient githubClient = new GithubClient(environment, githubUrl, githubAccessToken);
 
-        FilePath pathToFile = workspace.child(this.filepath);
+        FilePath pathToFile = workspace.child(filepath);
 
         if (!pathToFile.exists()) {
             listener.error("The coverage file at the provided path does not exist");
-            run.setResult(Result.FAILURE);
-            return;
+            build.setResult(Result.FAILURE);
+            return false;
         } else {
-            listener.getLogger().println(String.format("Found file '%s'", this.filepath));
+            listener.getLogger().println(String.format("Found file '%s'", filepath));
 //            String xmlString = FileUtils.readFileToString(new File(pathToFile.toURI()));
         }
 
@@ -120,25 +132,24 @@ public class GithubCoveragePublisher extends Recorder implements SimpleBuildStep
 
         try {
             CoverageReportAction coverageReport = buildStepService.generateCoverageReport(pathToFile, comparisonOption, coverageXmlType, coverageRateType);
-            run.addAction(coverageReport);
-            run.save();
+            build.addAction(coverageReport);
+            build.save();
 
             GithubPayload payload = buildStepService.generateGithubCovergePayload(coverageReport, environment.getBuildUrl());
             githubClient.sendCommitStatus(payload);
 
-            run.setResult(Result.SUCCESS);
+            build.setResult(Result.SUCCESS);
         } catch (Exception ex) {
             listener.error(ex.getMessage());
             ex.printStackTrace();
-            run.setResult(Result.FAILURE);
+            build.setResult(Result.FAILURE);
+            return false;
         }
-
+        return true;
     }
 
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
-
-
 
 
         private ListBoxModel sonarProjectModel;

@@ -17,7 +17,7 @@
     <orderEntry type="library" scope="TEST" name="com.github.paweladamski:HttpClientMock:Latest" level="project" />
     <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:structs:1.7" level="project" />
     <orderEntry type="library" name="Maven: org.jenkins-ci:symbol-annotation:1.7" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jenkins-ci.plugins.workflow:workflow-step-api:2.12" level="project" />
+    <orderEntry type="library" name="Maven: org.jenkins-ci.plugins.workflow:workflow-step-api:2.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jenkins-ci.plugins.workflow:workflow-cps:2.39" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jenkins-ci.plugins.workflow:workflow-scm-step:2.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jenkins-ci.plugins:script-security:1.31" level="project" />
@@ -49,6 +49,7 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jenkins-ci:annotation-indexer:1.12" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.findbugs:annotations:3.0.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.jcip:jcip-annotations:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
@@ -101,7 +102,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.sf.ezmorph:ezmorph:1.0.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-httpclient:commons-httpclient:3.1-jenkins-1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: args4j:args4j:2.0.31" level="project" />
-    <orderEntry type="library" name="Maven: org.jenkins-ci:annotation-indexer:1.12" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jenkins-ci:bytecode-compatibility-transformer:2.0-beta-2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.kohsuke:asm6:6.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jenkins-ci:task-reactor:1.5" level="project" />
