@@ -52,6 +52,42 @@ posting a GitHub status to your pull request.
 
 Open a PR and check that the job reports the correct status back to GitHub.
 
+## Using the plugin in a Jenkinsfile
+
+You can also use this plugin as part of Jenkins pipeline (aka Jenkinsfile). You can use it as an extra step, or as a post step.
+For example for a declarative Jenkinsfile:
+
+```
+pipeline {
+    stages {
+    ...
+        stage('Testing...') {
+            steps {
+                ...
+            }
+            post {
+                success {
+                    script {
+                        // if we are in a PR
+                        if (env.CHANGE_ID) {
+                            publishCoverageGithub(filepath:'coverage.xml', coverageXmlType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')
+                        }
+                    }
+                }
+            }
+        }
+    ...
+}
+```
+
+The different publishCoverageGithub() options are:
+- filepath
+- coverageXmlType: `cobertura`, `jacoco` or `sonarqube`
+- comparisonOption.value: `optionFixedCoverage` or `optionSonarProject`
+- comparisonOption.fixedCoverage (for fixed coverage). It is a percentage between 0.0 (0%) and 1.0 (100%)
+- comparisonOption.sonarProject (for Sonar). Project key name
+- coverageRateType: `Line`, `Branch` or `Overall`
+
 ## License
 
 All code is licensed under [Apache 2.0 License](LICENSE)
