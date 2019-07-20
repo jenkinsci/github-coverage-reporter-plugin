@@ -21,6 +21,7 @@ import io.jenkins.plugins.gcr.sonar.SonarException;
 import io.jenkins.plugins.gcr.sonar.models.SonarProject;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.File;
@@ -106,10 +107,12 @@ public class GithubCoveragePublisher extends Recorder {
         if (workspace == null) {
             return false;
         }
-        return publishCoverage(build, workspace, listener, build.getEnvironment(listener), filepath, coverageXmlType, comparisonOption, coverageRateType);
+        MutableBoolean codeCoverageAchieved = new MutableBoolean();
+        return publishCoverage(build, workspace, listener, build.getEnvironment(listener), filepath, coverageXmlType, comparisonOption, coverageRateType,codeCoverageAchieved);
     }
 
-    public static boolean publishCoverage(Run<?, ?> build, FilePath workspace, TaskListener listener, EnvVars env, String filepath, String coverageXmlType, io.jenkins.plugins.gcr.models.ComparisonOption comparisonOption, String coverageRateType) throws InterruptedException, IOException {
+    public static boolean publishCoverage(Run<?, ?> build, FilePath workspace, TaskListener listener, EnvVars env, String filepath, String coverageXmlType, io.jenkins.plugins.gcr.models.ComparisonOption comparisonOption, String coverageRateType, MutableBoolean codeCoverageAchieved) throws InterruptedException, IOException {
+        codeCoverageAchieved.setValue(false);
         listener.getLogger().println("build: Attempting to parse file of type, " + coverageXmlType + "");
 
         PluginEnvironment environment = new PluginEnvironment(env);
@@ -132,6 +135,7 @@ public class GithubCoveragePublisher extends Recorder {
 
         try {
             CoverageReportAction coverageReport = buildStepService.generateCoverageReport(pathToFile, comparisonOption, coverageXmlType, coverageRateType);
+            codeCoverageAchieved.setValue(coverageReport.isAcceptableCoverage());
             build.addAction(coverageReport);
             build.save();
 

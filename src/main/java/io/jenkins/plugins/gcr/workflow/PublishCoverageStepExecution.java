@@ -7,7 +7,8 @@ import javax.inject.Inject;
 
 import hudson.EnvVars;
 import hudson.model.BuildListener;
-import org.jenkinsci.plugins.workflow.steps.AbstractSynchronousNonBlockingStepExecution;
+import org.apache.commons.lang.mutable.MutableBoolean;
+import org.jenkinsci.plugins.workflow.steps.AbstractSynchronousStepExecution;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepContextParameter;
 
@@ -23,7 +24,7 @@ import io.jenkins.plugins.gcr.GithubCoveragePublisher;
  *
  * @author Nicolas Zin
  */
-public class PublishCoverageStepExecution extends AbstractSynchronousNonBlockingStepExecution<Void> {
+public class PublishCoverageStepExecution extends AbstractSynchronousStepExecution<Boolean> {
     private static final long serialVersionUID = 1L;
 
     @StepContextParameter
@@ -42,15 +43,16 @@ public class PublishCoverageStepExecution extends AbstractSynchronousNonBlocking
     private transient PublishCoverageStep step;
 
     @Override
-    protected Void run() throws Exception {
+    protected Boolean run() throws Exception {
         StepContext context = getContext();
         EnvVars env = context.get(EnvVars.class);
 
-        boolean res = GithubCoveragePublisher.publishCoverage(build, ws, listener, env, step.getFilePath(), step.getCoverageXmlType(), step.getComparisonOption(), step.getCoverageRateType());
+        MutableBoolean codeCoverageAchieved = new MutableBoolean();
+        boolean res = GithubCoveragePublisher.publishCoverage(build, ws, listener, env, step.getFilePath(), step.getCoverageXmlType(), step.getComparisonOption(), step.getCoverageRateType(),codeCoverageAchieved);
         if (!res) {
             throw new AbortException("Cannot publish coverage report");
         }
-        return null;
+        return codeCoverageAchieved.booleanValue();
     }
 
 }

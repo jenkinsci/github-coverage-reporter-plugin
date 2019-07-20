@@ -80,6 +80,34 @@ pipeline {
 }
 ```
 
+or if you want to add step depending on the coverage threshold result:
+```
+pipeline {
+    stages {
+    ...
+        stage('Testing...') {
+            steps {
+                ...
+            }
+            post {
+                success {
+                    script {
+                        // if we are in a PR
+                        if (env.CHANGE_ID) {
+                            if (publishCoverageGithub(filepath:'coverage.xml', coverageXmlType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')) {
+                                sh "echo success"
+                            } else {
+                                sh "echo failure"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ...
+}
+```
+
 The different publishCoverageGithub() options are:
 - filepath
 - coverageXmlType: `cobertura`, `jacoco` or `sonarqube`
