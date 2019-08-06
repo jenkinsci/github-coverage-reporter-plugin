@@ -12,6 +12,8 @@ public class PluginEnvironment {
 
     private String gitHash;
 
+    private String pullId;
+
     private String buildUrl;
 
     // Constructor
@@ -21,16 +23,32 @@ public class PluginEnvironment {
             pullRequestRepository = get("ghprbGhRepository", env);
             gitHash = get("ghprbActualCommit", env);
         } else{
-            String changeUrl = get("CHANGE_URL", env);
+            // either we receive a http PR (like CHANGE_URL=https://github.com/<org>/<repo>/pull/<id>)
+            // or git PR (like GIT_URL=git@github.com:<org>/<repo>.git
+            if (env.containsKey("CHANGE_URL")) {
 
-            Pattern pattern = Pattern.compile("https://[^/]*/(.*?)/pull/.*");
-            Matcher matcher = pattern.matcher(changeUrl);
-            if (matcher.find()) {
-                pullRequestRepository = matcher.group(1);
+                String changeUrl = get("CHANGE_URL", env);
+
+                Pattern pattern = Pattern.compile("https://[^/]*/(.*?)/pull/(.*)");
+                Matcher matcher = pattern.matcher(changeUrl);
+                if (matcher.find()) {
+                    pullRequestRepository = matcher.group(1);
+                    pullId = matcher.group(2);
+                } else {
+                    throw new IllegalArgumentException(String.format("Can't find the owner/repo from CHANGE_URL environmental variable '%s'", changeUrl));
+                }
             } else {
-                throw new IllegalArgumentException(String.format("Can't find the owner/repo from CHANGE_URL environmental variable '%s'", changeUrl));
+                String gitUrl = get("GIT_URL", env);
+
+                Pattern pattern = Pattern.compile("[^/]*@[^/]*:(.*?)\\.git");
+                Matcher matcher = pattern.matcher(gitUrl);
+                if (matcher.find()) {
+                    pullRequestRepository = matcher.group(1);
+                } else {
+                    throw new IllegalArgumentException(String.format("Can't find the owner/repo from GIT_URL environmental variable '%s'", gitUrl));
+                }
+                pullId = get("CHANGE_ID", env);
             }
-            gitHash = get("GIT_COMMIT", env);
         }
         buildUrl = get("BUILD_URL", env);
     }
@@ -39,6 +57,10 @@ public class PluginEnvironment {
 
     public String getGitHash() {
         return gitHash;
+    }
+
+    public String getPullId() {
+        return pullId;
     }
 
     public String getPullRequestRepository() {
