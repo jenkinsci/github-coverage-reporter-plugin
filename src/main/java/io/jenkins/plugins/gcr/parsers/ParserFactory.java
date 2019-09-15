@@ -14,6 +14,7 @@ public class ParserFactory {
     private ParserFactory() {
         parsers.put(CoverageType.COBERTURA, new CoberturaParser());
         parsers.put(CoverageType.JACOCO, new JacocoParser());
+        parsers.put(CoverageType.LCOV, new LcovParser());
     }
 
     public CoverageParser parserForType(CoverageType type) {

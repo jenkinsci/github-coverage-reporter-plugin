@@ -7,6 +7,7 @@ public enum CoverageType {
 
     JACOCO("jacoco"),
     COBERTURA("cobertura"),
+    LCOV("lcov"),
     SONARQUBE("sonarqube");
 
     private String identifier;

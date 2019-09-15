@@ -163,6 +163,7 @@ public class GithubCoveragePublisher extends Recorder {
             ListBoxModel model = new ListBoxModel();
             model.add("Cobertura XML", CoverageType.COBERTURA.getIdentifier());
             model.add("Jacoco XML", CoverageType.JACOCO.getIdentifier());
+            model.add("LCOV", CoverageType.LCOV.getIdentifier());
             return model;
         }
 
