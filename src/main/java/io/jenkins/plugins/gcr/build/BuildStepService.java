@@ -18,8 +18,8 @@ public class BuildStepService {
 
     }
 
-    public CoverageReportAction generateCoverageReport(FilePath filepath, ComparisonOption comparisonOption, String coverageXmlType, String coverageRateType) throws ParserException, SonarException {
-        CoverageParser parser = ParserFactory.instance.parserForType(CoverageType.fromIdentifier(coverageXmlType));
+    public CoverageReportAction generateCoverageReport(FilePath filepath, ComparisonOption comparisonOption, String coverageType, String coverageRateType) throws ParserException, SonarException {
+        CoverageParser parser = ParserFactory.instance.parserForType(CoverageType.fromIdentifier(coverageType));
 
         Coverage coverage = parser.parse(filepath);
         Coverage expectedCoverage = getExpectedCoverage(comparisonOption);

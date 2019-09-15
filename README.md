@@ -70,7 +70,7 @@ pipeline {
                     script {
                         // if we are in a PR
                         if (env.CHANGE_ID) {
-                            publishCoverageGithub(filepath:'coverage.xml', coverageXmlType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')
+                            publishCoverageGithub(filepath:'coverage.xml', coverageType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')
                         }
                     }
                 }
@@ -94,7 +94,7 @@ pipeline {
                     script {
                         // if we are in a PR
                         if (env.CHANGE_ID) {
-                            if (publishCoverageGithub(filepath:'coverage.xml', coverageXmlType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')) {
+                            if (publishCoverageGithub(filepath:'coverage.xml', coverageType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')) {
                                 sh "echo success"
                             } else {
                                 sh "echo failure"
@@ -110,7 +110,7 @@ pipeline {
 
 The different publishCoverageGithub() options are:
 - filepath
-- coverageXmlType: `cobertura`, `jacoco` or `sonarqube`
+- coverageType: `cobertura`, `jacoco`, `lcov` or `sonarqube`
 - comparisonOption.value: `optionFixedCoverage` or `optionSonarProject`
 - comparisonOption.fixedCoverage (for fixed coverage). It is a percentage between 0.0 (0%) and 1.0 (100%)
 - comparisonOption.sonarProject (for Sonar). Project key name
