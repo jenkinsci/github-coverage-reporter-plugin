@@ -3,7 +3,7 @@
 
     <f:section title="${descriptor.displayName}">
         <f:entry title="GitHub Access Token" field="githubAccessToken">
-            <f:textbox />
+            <f:password />
         </f:entry>
         <f:entry title="GitHub Enterprise URL" field="githubEnterpriseUrl">
             <f:textbox />
