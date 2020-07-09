@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>3.4</version>
+        <version>4.3</version>
         <relativePath />
     </parent>
     <groupId>io.jenkins.plugins</groupId>
@@ -96,8 +96,15 @@
         <dependency>
             <groupId>com.github.paweladamski</groupId>
             <artifactId>HttpClientMock</artifactId>
-            <version>1.0.2</version>
+            <version>1.8.0</version>
             <scope>test</scope>
+            <exclusions>
+                <!-- Provided by jenkins test harness -->
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -117,7 +124,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
+                <version>0.8.5</version>
                 <executions>
                     <execution>
                         <goals>
