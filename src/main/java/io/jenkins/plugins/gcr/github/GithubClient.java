@@ -88,7 +88,7 @@ public class GithubClient {
             return result.getMessage();
         } catch (IOException ex) {
             ex.printStackTrace();
-            throw new GithubClientException("IOException during request");
+            throw new GithubClientException("IOException during request. Error: " + ex.getMessage());
         }
     }
 
@@ -137,7 +137,7 @@ public class GithubClient {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
-            throw new GithubClientException("IOException during request");
+            throw new GithubClientException("IOException during request. Exception message: " + ex.getMessage() + "\n");
         }
     }
 
