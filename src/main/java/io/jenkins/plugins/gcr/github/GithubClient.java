@@ -1,13 +1,16 @@
 package io.jenkins.plugins.gcr.github;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import io.jenkins.plugins.gcr.PluginConfiguration;
 import io.jenkins.plugins.gcr.models.PluginEnvironment;
-import jdk.nashorn.internal.parser.JSONParser;
-import net.sf.json.JSONObject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.ReaderInputStream;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -17,13 +20,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import com.google.gson.JsonParser;
 
 public class GithubClient {
 
@@ -88,7 +84,7 @@ public class GithubClient {
             return result.getMessage();
         } catch (IOException ex) {
             ex.printStackTrace();
-            throw new GithubClientException("IOException during request. Error: " + ex.getMessage());
+            throw new GithubClientException("IOException during request. Error: " + ex.getMessage() + ".\n" + ExceptionUtils.getStackTrace(ex));
         }
     }
 
