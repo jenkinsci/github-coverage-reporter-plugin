@@ -13,6 +13,7 @@ public class ParserFactory {
 
     private ParserFactory() {
         parsers.put(CoverageType.COBERTURA, new CoberturaParser());
+        parsers.put(CoverageType.CLOVER, new CloverParser());
         parsers.put(CoverageType.JACOCO, new JacocoParser());
     }
 

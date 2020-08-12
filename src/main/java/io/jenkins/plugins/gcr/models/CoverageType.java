@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 
 public enum CoverageType {
 
+    CLOVER("clover"),
     JACOCO("jacoco"),
     COBERTURA("cobertura"),
     SONARQUBE("sonarqube");

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1597246607">
+    <project timestamp="1597246607">
+        <file name="/var/www/html/classes/AccessControl.php">
+            <class name="AccessControl" namespace="global">
+                <metrics complexity="7" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="13" elements="27" coveredelements="14"/>
+            </class>
+            <line num="8" type="method" name="__construct" complexity="1" crap="1" count="313"/>
+            <line num="10" type="stmt" count="313"/>
+            <line num="11" type="stmt" count="313"/>
+            <line num="14" type="method" name="hasPermission" visibility="public" complexity="4" crap="4.06" count="313"/>
+            <line num="16" type="stmt" count="313"/>
+            <line num="17" type="stmt" count="313"/>
+            <line num="19" type="stmt" count="313"/>
+            <line num="20" type="stmt" count="313"/>
+            <line num="23" type="stmt" count="313"/>
+            <line num="24" type="stmt" count="0"/>
+            <line num="27" type="stmt" count="313"/>
+            <line num="31" type="stmt" count="313"/>
+            <line num="32" type="stmt" count="313"/>
+            <line num="34" type="stmt" count="313"/>
+            <line num="36" type="stmt" count="313"/>
+            <line num="37" type="stmt" count="313"/>
+            <line num="39" type="stmt" count="0"/>
+            <line num="42" type="method" name="handleNoAccess" visibility="public" complexity="2" crap="6" count="0"/>
+            <line num="45" type="stmt" count="0"/>
+            <line num="46" type="stmt" count="0"/>
+            <line num="49" type="stmt" count="0"/>
+            <line num="50" type="stmt" count="0"/>
+            <line num="51" type="stmt" count="0"/>
+            <line num="54" type="stmt" count="0"/>
+            <line num="55" type="stmt" count="0"/>
+            <line num="56" type="stmt" count="0"/>
+            <line num="57" type="stmt" count="0"/>
+            <metrics loc="59" ncloc="54" classes="1" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="13" elements="27" coveredelements="14"/>
+        </file>
+        <metrics files="2036" loc="163880" ncloc="131963" classes="1534" methods="8092" coveredmethods="4150" conditionals="0" coveredconditionals="0" statements="50656" coveredstatements="23197" elements="58748" coveredelements="27347"/>
+    </project>
+</coverage>
