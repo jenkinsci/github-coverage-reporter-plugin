@@ -1,6 +1,7 @@
 package io.jenkins.plugins.gcr;
 
 import io.jenkins.plugins.gcr.models.CoverageType;
+import io.jenkins.plugins.gcr.parsers.CloverParser;
 import io.jenkins.plugins.gcr.parsers.CoberturaParser;
 import io.jenkins.plugins.gcr.parsers.CoverageParser;
 import io.jenkins.plugins.gcr.parsers.JacocoParser;
@@ -10,6 +11,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ParserFactoryTests {
+
+    @Test
+    public void testGetCloverParser() {
+        ParserFactory factory = ParserFactory.instance;
+
+        CoverageParser parser = factory.parserForType(CoverageType.CLOVER);
+
+        Assert.assertThat(parser, CoreMatchers.instanceOf(CloverParser.class));
+    }
 
     @Test
     public void testGetCoberturaParser() {

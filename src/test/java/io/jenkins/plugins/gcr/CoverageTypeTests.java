@@ -21,6 +21,13 @@ public class CoverageTypeTests {
     }
 
     @Test
+    public void testCloverCoverageTypeFromString() {
+        CoverageType type = CoverageType.fromIdentifier("clover");
+        Assert.assertEquals(type, CoverageType.CLOVER);
+        Assert.assertEquals(type.getIdentifier(), CoverageType.CLOVER.getIdentifier());
+    }
+
+    @Test
     public void testSonarqubeCoverageTypeFromString() {
         CoverageType type = CoverageType.fromIdentifier("sonarqube");
         Assert.assertEquals(type, CoverageType.SONARQUBE);
