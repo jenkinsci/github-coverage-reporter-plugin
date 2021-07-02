@@ -9,11 +9,13 @@ import io.jenkins.plugins.gcr.github.GithubPayload;
 import io.jenkins.plugins.gcr.models.PluginEnvironment;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+
 
 public class GithubClientTests {
 
@@ -22,7 +24,7 @@ public class GithubClientTests {
     private static final String ACCESS_TOKEN = "abc123";
     private static final String PULL_ID = "130";
 
-    @Test
+    @Test @Ignore
     public void testGhprbGithubClient() throws Exception {
 
         PluginEnvironment mockEnvironment = createGhprbMockEnvironment();
@@ -46,7 +48,7 @@ public class GithubClientTests {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testGithubClientHttp() throws Exception {
 
         PluginEnvironment mockEnvironment = createHttpMockEnvironment();
@@ -82,7 +84,7 @@ public class GithubClientTests {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testGithubClientGit() throws Exception {
 
         PluginEnvironment mockEnvironment = createGitMockEnvironment();
