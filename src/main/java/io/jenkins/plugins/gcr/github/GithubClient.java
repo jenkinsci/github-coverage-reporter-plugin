@@ -1,29 +1,26 @@
 package io.jenkins.plugins.gcr.github;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import io.jenkins.plugins.gcr.PluginConfiguration;
-import io.jenkins.plugins.gcr.models.PluginEnvironment;
-import jdk.nashorn.internal.parser.JSONParser;
-import net.sf.json.JSONObject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import io.jenkins.plugins.gcr.models.PluginEnvironment;
 
 public class GithubClient {
 
@@ -51,7 +48,10 @@ public class GithubClient {
     private String fetchGitHashFromGithub(String repo,String pullid) throws GithubClientException {
         String path = String.format("/repos/%s/pulls/%s", repo, pullid);
         URI uri = buildUri(path);
-        HttpGet getRequest = new HttpGet(uri);
+        HttpUriRequest getRequest = RequestBuilder.get()
+          .setUri(uri)
+          .setHeader("Authorization", "token " + accessToken)
+          .build();
 
         ResponseHandler<GithubResponse> responseHandler = (HttpResponse response) -> {
             InputStream stream = response.getEntity().getContent();
@@ -104,11 +104,13 @@ public class GithubClient {
 
 
         URI uri = buildUri(path);
-        HttpPost postRequest = new HttpPost(uri);
+        RequestBuilder requestBuilder = RequestBuilder.post()
+          .setUri(uri)
+          .setHeader("Authorization", "token " + accessToken);
 
         try {
             StringEntity entity = new StringEntity(githubPayload.toJSONString());
-            postRequest.setEntity(entity);
+            requestBuilder.setEntity(entity);
         } catch (UnsupportedEncodingException ex) {
             throw new GithubClientException("Issue with encoding of github payload", ex);
         }
@@ -130,6 +132,7 @@ public class GithubClient {
         };
 
         try {
+            HttpUriRequest postRequest = requestBuilder.build();
             GithubResponse result = this.httpClient.execute(postRequest, responseHandler);
             if (!result.isSuccess()) {
                 String message = String.format("Bad HTTP result for url %s. Error message:  ", postRequest.getURI().toString());
@@ -156,7 +159,6 @@ public class GithubClient {
         }
 
         builder.setPath(path);
-        builder.setParameter("access_token", accessToken);
 
         try {
             return builder.build();
