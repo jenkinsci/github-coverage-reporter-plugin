@@ -1,12 +1,8 @@
 package io.jenkins.plugins.gcr.workflow;
 
-import io.jenkins.plugins.gcr.GithubCoveragePublisher;
 import hudson.Extension;
 
-import javax.annotation.CheckForNull;
-
 import io.jenkins.plugins.gcr.models.ComparisonOption;
-import io.jenkins.plugins.gcr.workflow.PublishCoverageStepExecution;
 import org.jenkinsci.plugins.workflow.steps.AbstractStepDescriptorImpl;
 import org.jenkinsci.plugins.workflow.steps.AbstractStepImpl;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -22,16 +18,16 @@ public class PublishCoverageStep extends AbstractStepImpl {
 
     private String filepath;
 
-    private String coverageXmlType;
+    private String coverageType;
 
     private String coverageRateType;
 
     private ComparisonOption comparisonOption;
 
     @DataBoundConstructor
-    public PublishCoverageStep(String filepath, String coverageXmlType, String coverageRateType, ComparisonOption comparisonOption) throws IOException {
+    public PublishCoverageStep(String filepath, String coverageType, String coverageRateType, ComparisonOption comparisonOption) throws IOException {
         this.filepath = filepath;
-        this.coverageXmlType = coverageXmlType;
+        this.coverageType = coverageType;
         this.coverageRateType = coverageRateType;
         this.comparisonOption = comparisonOption;
     }
@@ -40,8 +36,8 @@ public class PublishCoverageStep extends AbstractStepImpl {
         return filepath;
     }
 
-    public String getCoverageXmlType() {
-        return coverageXmlType;
+    public String getCoverageType() {
+        return coverageType;
     }
 
     public String getCoverageRateType() {

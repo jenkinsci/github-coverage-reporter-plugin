@@ -12,26 +12,16 @@ import io.jenkins.plugins.gcr.build.BuildStepService;
 import io.jenkins.plugins.gcr.github.GithubClient;
 import io.jenkins.plugins.gcr.github.GithubPayload;
 import io.jenkins.plugins.gcr.models.*;
-import io.jenkins.plugins.gcr.parsers.CoberturaParser;
-import io.jenkins.plugins.gcr.parsers.CoverageParser;
-import io.jenkins.plugins.gcr.parsers.ParserException;
-import io.jenkins.plugins.gcr.parsers.ParserFactory;
 import io.jenkins.plugins.gcr.sonar.SonarClient;
-import io.jenkins.plugins.gcr.sonar.SonarException;
 import io.jenkins.plugins.gcr.sonar.models.SonarProject;
-import net.sf.json.JSONObject;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
 
 public class GithubCoveragePublisher extends Recorder {
 
@@ -40,16 +30,16 @@ public class GithubCoveragePublisher extends Recorder {
 
     private final String filepath;
 
-    private String coverageXmlType;
+    private String coverageType;
 
     private String coverageRateType;
 
     private ComparisonOption comparisonOption;
 
     @DataBoundConstructor
-    public GithubCoveragePublisher(String filepath, String coverageXmlType, String coverageRateType, ComparisonOption comparisonOption) throws IOException {
+    public GithubCoveragePublisher(String filepath, String coverageType, String coverageRateType, ComparisonOption comparisonOption) throws IOException {
         this.filepath = filepath;
-        this.coverageXmlType = coverageXmlType;
+        this.coverageType = coverageType;
         this.coverageRateType = coverageRateType;
         this.comparisonOption = comparisonOption;
     }
@@ -65,13 +55,13 @@ public class GithubCoveragePublisher extends Recorder {
         return filepath;
     }
 
-    public String getCoverageXmlType() {
-        return coverageXmlType;
+    public String getCoverageType() {
+        return coverageType;
     }
 
     @DataBoundSetter
-    public void setCoverageXmlType(String coverageXmlType) {
-        this.coverageXmlType = coverageXmlType;
+    public void setCoverageType(String coverageType) {
+        this.coverageType = coverageType;
     }
 
     public ComparisonOption getComparisonOption() {
@@ -108,12 +98,12 @@ public class GithubCoveragePublisher extends Recorder {
             return false;
         }
         MutableBoolean codeCoverageAchieved = new MutableBoolean();
-        return publishCoverage(build, workspace, listener, build.getEnvironment(listener), filepath, coverageXmlType, comparisonOption, coverageRateType,codeCoverageAchieved);
+        return publishCoverage(build, workspace, listener, build.getEnvironment(listener), filepath, coverageType, comparisonOption, coverageRateType,codeCoverageAchieved);
     }
 
-    public static boolean publishCoverage(Run<?, ?> build, FilePath workspace, TaskListener listener, EnvVars env, String filepath, String coverageXmlType, io.jenkins.plugins.gcr.models.ComparisonOption comparisonOption, String coverageRateType, MutableBoolean codeCoverageAchieved) throws InterruptedException, IOException {
+    public static boolean publishCoverage(Run<?, ?> build, FilePath workspace, TaskListener listener, EnvVars env, String filepath, String coverageType, io.jenkins.plugins.gcr.models.ComparisonOption comparisonOption, String coverageRateType, MutableBoolean codeCoverageAchieved) throws InterruptedException, IOException {
         codeCoverageAchieved.setValue(false);
-        listener.getLogger().println("build: Attempting to parse file of type, " + coverageXmlType + "");
+        listener.getLogger().println("build: Attempting to parse file of type, " + coverageType + "");
 
         PluginEnvironment environment = new PluginEnvironment(env);
         String githubAccessToken = PluginConfiguration.DESCRIPTOR.getGithubAccessToken();
@@ -134,7 +124,7 @@ public class GithubCoveragePublisher extends Recorder {
         BuildStepService buildStepService = new BuildStepService();
 
         try {
-            CoverageReportAction coverageReport = buildStepService.generateCoverageReport(pathToFile, comparisonOption, coverageXmlType, coverageRateType);
+            CoverageReportAction coverageReport = buildStepService.generateCoverageReport(pathToFile, comparisonOption, coverageType, coverageRateType);
             codeCoverageAchieved.setValue(coverageReport.isAcceptableCoverage());
             build.addAction(coverageReport);
             build.save();
@@ -158,11 +148,12 @@ public class GithubCoveragePublisher extends Recorder {
 
         private ListBoxModel sonarProjectModel;
 
-        public ListBoxModel doFillCoverageXmlTypeItems() {
+        public ListBoxModel doFillCoverageTypeItems() {
             // TODO: localise
             ListBoxModel model = new ListBoxModel();
             model.add("Cobertura XML", CoverageType.COBERTURA.getIdentifier());
             model.add("Jacoco XML", CoverageType.JACOCO.getIdentifier());
+            model.add("LCOV", CoverageType.LCOV.getIdentifier());
             return model;
         }
 

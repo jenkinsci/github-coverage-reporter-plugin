@@ -3,7 +3,7 @@
     <f:entry title="${%Filepath}" field="filepath">
         <f:textbox />
     </f:entry>
-    <f:entry title="${%CoverageXmlType}" field="coverageXmlType">
+    <f:entry title="${%CoverageType}" field="coverageType">
         <f:select />
     </f:entry>
     <f:radioBlock name="comparisonOption" value="optionSonarProject" title="${%EnableSonar}"

@@ -28,6 +28,13 @@ public class CoverageTypeTests {
     }
 
     @Test
+    public void testLcovCoverageTypeFromString() {
+        final CoverageType type = CoverageType.fromIdentifier("lcov");
+        Assert.assertEquals(type, CoverageType.LCOV);
+        Assert.assertEquals(type.getIdentifier(), CoverageType.LCOV.getIdentifier());
+    }
+
+    @Test
     public void testNullCoverageTypeFromString() {
         CoverageType type1 = CoverageType.fromIdentifier("");
         CoverageType type2 = CoverageType.fromIdentifier(null);

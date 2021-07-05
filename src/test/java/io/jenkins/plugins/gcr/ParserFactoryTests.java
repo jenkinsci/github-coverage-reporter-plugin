@@ -1,10 +1,7 @@
 package io.jenkins.plugins.gcr;
 
 import io.jenkins.plugins.gcr.models.CoverageType;
-import io.jenkins.plugins.gcr.parsers.CoberturaParser;
-import io.jenkins.plugins.gcr.parsers.CoverageParser;
-import io.jenkins.plugins.gcr.parsers.JacocoParser;
-import io.jenkins.plugins.gcr.parsers.ParserFactory;
+import io.jenkins.plugins.gcr.parsers.*;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,4 +26,12 @@ public class ParserFactoryTests {
         Assert.assertThat(parser, CoreMatchers.instanceOf(JacocoParser.class));
     }
 
+    @Test
+    public void testGetLcovParser() {
+        final ParserFactory factory = ParserFactory.instance;
+
+        final CoverageParser parser = factory.parserForType(CoverageType.LCOV);
+
+        Assert.assertThat(parser, CoreMatchers.instanceOf(LcovParser.class));
+    }
 }
